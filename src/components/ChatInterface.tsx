@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react"
-import { Home, Menu, MoreHorizontal, ExternalLink, Mic, ArrowUp, Edit2, RotateCcw, ChevronUp, Search } from "lucide-react"
+import { Home, Menu, MoreHorizontal, ExternalLink, Mic, ArrowUp, Edit2, RotateCcw, ChevronUp, Search, Copy, Check } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { SearchInterface } from "./SearchInterface"
 import { Badge } from "@/components/ui/badge"
@@ -32,6 +32,9 @@ export function ChatInterface({ messages = [], onSendMessage, initialQuery }: Ch
   const [searchSteps, setSearchSteps] = useState<SearchStep[]>([])
   const [isSearching, setIsSearching] = useState(false)
   const [viewportHeight, setViewportHeight] = useState(window.innerHeight)
+  const [isEditing, setIsEditing] = useState(false)
+  const [editQuery, setEditQuery] = useState(currentQuery)
+  const [isCopied, setIsCopied] = useState(false)
 
   // Handle initial query on mount
   useEffect(() => {
@@ -123,38 +126,82 @@ According to public profiles, Harmya Surani has also been associated with other 
     onSendMessage?.(content)
   }
 
+  const handleCopyQuery = async () => {
+    if (currentQuery) {
+      try {
+        await navigator.clipboard.writeText(currentQuery)
+        setIsCopied(true)
+        setTimeout(() => setIsCopied(false), 2000)
+      } catch (err) {
+        console.error('Failed to copy:', err)
+      }
+    }
+  }
+
+  const handleEditSubmit = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      setCurrentQuery(editQuery)
+      setIsEditing(false)
+      handleSendMessage(editQuery)
+    } else if (e.key === 'Escape') {
+      setEditQuery(currentQuery)
+      setIsEditing(false)
+    }
+  }
+
   const CleanHeader = () => (
     <div className="border-b border-border bg-background/95 backdrop-blur-sm">
-      {/* Single Clean Header Row */}
-      <div className="flex items-center justify-between gap-4 p-4">
-        <div className="flex items-center gap-3">
-          <Button variant="ghost" size="sm" className="p-2">
-            <Menu className="h-4 w-4" />
-          </Button>
-          <div className="flex items-center gap-2">
-            <span className="text-lg font-semibold">Pragati AI</span>
-            <Button variant="ghost" size="sm" className="bg-muted/60 text-foreground px-3 py-2 rounded-xl">
-              <span className="text-sm">+ New</span>
-            </Button>
-          </div>
-        </div>
-        
-        {/* Current Query or Brand Name */}
-        {currentQuery && (
-          <div className="flex-1 text-center">
-            <div className="flex items-center justify-center gap-2 text-lg font-medium text-foreground">
-              <span className="truncate max-w-md">{currentQuery}</span>
-              <Button variant="ghost" size="sm" className="p-1">
+      {/* Simplified Header - Only User Message */}
+      <div className="flex items-center justify-center gap-2 p-4">
+        {currentQuery ? (
+          <div className="flex items-center gap-2 bg-card/50 border border-border rounded-xl px-4 py-2 max-w-2xl w-full">
+            {isEditing ? (
+              <input
+                value={editQuery}
+                onChange={(e) => setEditQuery(e.target.value)}
+                onKeyDown={handleEditSubmit}
+                onBlur={() => setIsEditing(false)}
+                className="flex-1 bg-transparent border-none outline-none text-foreground"
+                autoFocus
+              />
+            ) : (
+              <span className="flex-1 text-foreground font-medium truncate">
+                {currentQuery}
+              </span>
+            )}
+            
+            <div className="flex items-center gap-1 flex-shrink-0">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="p-1 h-auto hover:bg-muted/50"
+                onClick={() => {
+                  setEditQuery(currentQuery)
+                  setIsEditing(true)
+                }}
+              >
                 <Edit2 className="h-3 w-3" />
+              </Button>
+              
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="p-1 h-auto hover:bg-muted/50"
+                onClick={handleCopyQuery}
+              >
+                {isCopied ? (
+                  <Check className="h-3 w-3 text-green-500" />
+                ) : (
+                  <Copy className="h-3 w-3" />
+                )}
               </Button>
             </div>
           </div>
+        ) : (
+          <div className="text-muted-foreground text-sm">
+            Ask a question to get started
+          </div>
         )}
-        
-        <Button className="bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-2 rounded-xl text-sm">
-          <ExternalLink className="h-4 w-4 mr-2" />
-          Open in App
-        </Button>
       </div>
 
       {/* Tabs */}
