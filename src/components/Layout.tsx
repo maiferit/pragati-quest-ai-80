@@ -2,7 +2,9 @@ import { ReactNode } from "react"
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { AppSidebar } from "./AppSidebar"
 import { Button } from "@/components/ui/button"
-import { ExternalLink } from "lucide-react"
+import { ThemeToggle } from "./ThemeToggle"
+import { User, Settings } from "lucide-react"
+import { Link } from "react-router-dom"
 
 interface LayoutProps {
   children: ReactNode
@@ -29,11 +31,17 @@ export function Layout({ children }: LayoutProps) {
               </div>
             </div>
             
-            <Button variant="outline" size="sm" className="flex-shrink-0 ml-2">
-              <ExternalLink className="h-4 w-4 mr-1 sm:mr-2" />
-              <span className="hidden sm:inline">Open in App</span>
-              <span className="sm:hidden">Open</span>
-            </Button>
+            <div className="flex items-center gap-2 flex-shrink-0 ml-2">
+              <ThemeToggle />
+              <Link to="/login">
+                <Button variant="ghost" size="sm" className="p-2">
+                  <User className="h-4 w-4" />
+                </Button>
+              </Link>
+              <Button variant="ghost" size="sm" className="p-2">
+                <Settings className="h-4 w-4" />
+              </Button>
+            </div>
           </header>
 
           {/* Main Content */}

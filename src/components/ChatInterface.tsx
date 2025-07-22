@@ -150,55 +150,55 @@ According to public profiles, Harmya Surani has also been associated with other 
   }
 
   const CleanHeader = () => (
-    <div className="border-b border-border bg-background/95 backdrop-blur-sm">
+    <div className="border-b border-border/50 bg-background">
       {/* Simplified Header - Only User Message */}
-      <div className="flex items-center justify-center gap-2 p-4">
+      <div className="flex items-center justify-center gap-2 p-6">
         {currentQuery ? (
-          <div className="flex items-center gap-2 bg-card/50 border border-border rounded-xl px-4 py-2 max-w-2xl w-full">
+          <div className="flex items-center gap-2 group max-w-4xl w-full">
             {isEditing ? (
               <input
                 value={editQuery}
                 onChange={(e) => setEditQuery(e.target.value)}
                 onKeyDown={handleEditSubmit}
                 onBlur={() => setIsEditing(false)}
-                className="flex-1 bg-transparent border-none outline-none text-foreground"
+                className="flex-1 bg-transparent border-none outline-none text-foreground text-xl font-medium"
                 autoFocus
               />
             ) : (
-              <span className="flex-1 text-foreground font-medium truncate">
+              <span className="flex-1 text-foreground font-medium text-xl">
                 {currentQuery}
               </span>
             )}
             
-            <div className="flex items-center gap-1 flex-shrink-0">
+            <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
               <Button 
                 variant="ghost" 
                 size="sm" 
-                className="p-1 h-auto hover:bg-muted/50"
+                className="p-2 h-auto hover:bg-muted/50 rounded-lg"
                 onClick={() => {
                   setEditQuery(currentQuery)
                   setIsEditing(true)
                 }}
               >
-                <Edit2 className="h-3 w-3" />
+                <Edit2 className="h-4 w-4" />
               </Button>
               
               <Button 
                 variant="ghost" 
                 size="sm" 
-                className="p-1 h-auto hover:bg-muted/50"
+                className="p-2 h-auto hover:bg-muted/50 rounded-lg"
                 onClick={handleCopyQuery}
               >
                 {isCopied ? (
-                  <Check className="h-3 w-3 text-green-500" />
+                  <Check className="h-4 w-4 text-green-500" />
                 ) : (
-                  <Copy className="h-3 w-3" />
+                  <Copy className="h-4 w-4" />
                 )}
               </Button>
             </div>
           </div>
         ) : (
-          <div className="text-muted-foreground text-sm">
+          <div className="text-muted-foreground text-lg">
             Ask a question to get started
           </div>
         )}
