@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from "react"
-import { Home, Menu, MoreHorizontal, ExternalLink, Mic, ArrowUp, Edit2, RotateCcw, ChevronUp, Search, Copy, Check } from "lucide-react"
+import { Home, Menu, MoreHorizontal, ExternalLink, Mic, ArrowUp, Edit2, RotateCcw, ChevronUp, Search, Copy, Check, Lightbulb, Image, List, Share, ThumbsUp, ThumbsDown, ChevronDown, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { SearchInterface } from "./SearchInterface"
 import { Badge } from "@/components/ui/badge"
+import { Input } from "@/components/ui/input"
 
 interface Message {
   id: string
@@ -303,33 +304,25 @@ According to public profiles, Harmya Surani has also been associated with other 
     
     if (!assistantMessage) {
       return (
-        <div className="flex-1 flex items-center justify-center">
-          <div className="text-center">
-            <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
-              <div className="w-6 h-6 rounded-full bg-primary animate-glow-pulse"></div>
-            </div>
-            <p className="text-muted-foreground">
-              {isSearching ? "Searching and analyzing..." : "Ask anything to get started"}
-            </p>
+        <div className="text-center py-12">
+          <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
+            <div className="w-6 h-6 rounded-full bg-primary animate-pulse"></div>
           </div>
+          <p className="text-muted-foreground">
+            {isSearching ? "Searching and analyzing..." : "Ask anything to get started"}
+          </p>
         </div>
       )
     }
 
     return (
-      <div className="flex-1 overflow-y-auto">
-        <div className="max-w-4xl mx-auto p-6 pb-24">
-          <div className="bg-card/30 rounded-2xl p-6 shadow-sm">
-            <div className="prose prose-invert max-w-none">
-              <div className="text-foreground leading-7 text-[15px] whitespace-pre-wrap">
-                {assistantMessage.content.split('\n').map((line, i) => (
-                  <p key={i} className={line.startsWith('**') ? 'font-semibold mb-3' : 'mb-3'}>
-                    {line.replace(/\*\*(.*?)\*\*/g, '$1')}
-                  </p>
-                ))}
-              </div>
-            </div>
-          </div>
+      <div className="prose prose-gray max-w-none">
+        <div className="text-foreground leading-7 text-base space-y-4">
+          {assistantMessage.content.split('\n\n').map((paragraph, i) => (
+            <p key={i} className="text-foreground">
+              {paragraph.replace(/\*\*(.*?)\*\*/g, (match, p1) => p1)}
+            </p>
+          ))}
         </div>
       </div>
     )
@@ -361,62 +354,265 @@ According to public profiles, Harmya Surani has also been associated with other 
     
     if (!assistantMessage?.sources) {
       return (
-        <div className="flex-1 flex items-center justify-center">
-          <div className="text-center text-muted-foreground">
-            No sources available yet
-          </div>
+        <div className="text-center text-muted-foreground py-12">
+          No sources available yet
         </div>
       )
     }
 
     return (
-      <div className="flex-1 overflow-y-auto">
-        <div className="max-w-4xl mx-auto p-6">
-          <div className="grid gap-3">
-            {assistantMessage.sources.map((source, index) => (
-              <div key={index} className="flex items-center gap-3 p-4 bg-card/30 hover:bg-card/40 rounded-lg transition-colors">
-                <span className="text-lg">{source.favicon}</span>
-                <div className="flex-1 min-w-0">
-                  <div className="text-sm font-medium text-foreground truncate">
-                    {source.name}
-                  </div>
-                  <div className="text-xs text-muted-foreground truncate">
-                    {source.url}
-                  </div>
-                </div>
+      <div className="grid gap-3">
+        {assistantMessage.sources.map((source, index) => (
+          <div key={index} className="flex items-center gap-3 p-4 bg-card/50 hover:bg-card/70 rounded-lg transition-colors border border-border/50">
+            <span className="text-lg">{source.favicon}</span>
+            <div className="flex-1 min-w-0">
+              <div className="text-sm font-medium text-foreground truncate">
+                {source.name}
               </div>
-            ))}
+              <div className="text-xs text-muted-foreground truncate">
+                {source.url}
+              </div>
+            </div>
+            <ExternalLink className="h-4 w-4 text-muted-foreground" />
           </div>
-        </div>
+        ))}
       </div>
     )
   }
 
   return (
-    <div className="flex flex-col h-full bg-background overflow-x-hidden" style={{ height: `${viewportHeight}px` }}>
-      <CleanHeader />
-      <MobileTimelineSteps />
-      
-      <div className="flex flex-1 overflow-hidden">
-        {/* Timeline Panel - Desktop Only */}
-        {currentQuery && <TimelinePanel />}
-        
-        {/* Main Content */}
-        <div className="flex-1 flex flex-col min-w-0">
-          {activeTab === "answer" && <AnswerSection />}
-          {activeTab === "sources" && <SourcesSection />}
-          {activeTab === "images" && (
-            <div className="flex-1 p-6">
-              <div className="text-center text-muted-foreground">
-                Images view coming soon...
+    <div className="flex flex-col h-full bg-background">
+      {currentQuery ? (
+        <>
+          {/* User Query Display */}
+          <div className="border-b border-border bg-background px-4 py-6">
+            <div className="max-w-4xl mx-auto">
+              <div className="group relative">
+                {isEditing ? (
+                  <div className="flex items-center gap-2">
+                    <Input
+                      value={editQuery}
+                      onChange={(e) => setEditQuery(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          setCurrentQuery(editQuery)
+                          setIsEditing(false)
+                          handleSendMessage(editQuery)
+                        }
+                        if (e.key === "Escape") {
+                          setEditQuery(currentQuery)
+                          setIsEditing(false)
+                        }
+                      }}
+                      className="flex-1 text-xl font-medium bg-transparent border-none p-0 focus-visible:ring-0 shadow-none"
+                      autoFocus
+                    />
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        setCurrentQuery(editQuery)
+                        setIsEditing(false)
+                        handleSendMessage(editQuery)
+                      }}
+                      className="h-8 w-8 p-0"
+                    >
+                      <Check className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        setEditQuery(currentQuery)
+                        setIsEditing(false)
+                      }}
+                      className="h-8 w-8 p-0"
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="flex items-start justify-between">
+                    <h1 className="text-xl sm:text-2xl font-medium text-foreground pr-4 leading-relaxed">
+                      {currentQuery}
+                    </h1>
+                    <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => {
+                          setEditQuery(currentQuery)
+                          setIsEditing(true)
+                        }}
+                        className="h-8 w-8 p-0 hover:bg-muted"
+                      >
+                        <Edit2 className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={handleCopyQuery}
+                        className="h-8 w-8 p-0 hover:bg-muted"
+                      >
+                        {isCopied ? (
+                          <Check className="h-4 w-4 text-green-500" />
+                        ) : (
+                          <Copy className="h-4 w-4" />
+                        )}
+                      </Button>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
-          )}
-        </div>
-      </div>
+          </div>
 
-      {/* Fixed Bottom Input - Keyboard Aware */}
-      <div className="bottom-input border-t border-border bg-background/95 backdrop-blur-sm p-4 fixed bottom-0 left-0 right-0 z-20">
+          {/* Tab Navigation */}
+          <div className="border-b border-border bg-background">
+            <div className="max-w-4xl mx-auto px-4">
+              <div className="flex items-center">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setActiveTab("answer")}
+                  className={`rounded-none border-b-2 px-6 py-4 font-medium ${
+                    activeTab === "answer" 
+                      ? "border-primary text-primary" 
+                      : "border-transparent text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  <Lightbulb className="h-4 w-4 mr-2" />
+                  Answer
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setActiveTab("images")}
+                  className={`rounded-none border-b-2 px-6 py-4 font-medium ${
+                    activeTab === "images" 
+                      ? "border-primary text-primary" 
+                      : "border-transparent text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  <Image className="h-4 w-4 mr-2" />
+                  Images
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setActiveTab("sources")}
+                  className={`rounded-none border-b-2 px-6 py-4 font-medium ${
+                    activeTab === "sources" 
+                      ? "border-primary text-primary" 
+                      : "border-transparent text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  <ExternalLink className="h-4 w-4 mr-2" />
+                  Sources • {assistantMessage?.sources?.length || 0}
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setActiveTab("steps")}
+                  className={`rounded-none border-b-2 px-6 py-4 font-medium ${
+                    activeTab === "steps" 
+                      ? "border-primary text-primary" 
+                      : "border-transparent text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  <List className="h-4 w-4 mr-2" />
+                  Steps
+                </Button>
+              </div>
+            </div>
+          </div>
+
+          {/* Content Area */}
+          <div className="flex-1 overflow-y-auto">
+            <div className="max-w-4xl mx-auto px-4 py-6">
+              {activeTab === "answer" && <AnswerSection />}
+              {activeTab === "sources" && <SourcesSection />}
+              {activeTab === "images" && (
+                <div className="text-center text-muted-foreground py-12">
+                  Images view coming soon...
+                </div>
+              )}
+              {activeTab === "steps" && (
+                <div className="space-y-4">
+                  {searchSteps.map((step, index) => (
+                    <div key={step.id} className="flex items-start gap-3 p-4 bg-card rounded-lg">
+                      <div className={`w-2 h-2 rounded-full mt-2 flex-shrink-0 ${
+                        step.status === "completed" ? "bg-primary" :
+                        step.status === "active" ? "bg-primary animate-pulse" :
+                        "bg-muted-foreground/30"
+                      }`} />
+                      <div className="flex-1">
+                        <div className={`text-sm font-medium ${
+                          step.status === "active" ? "text-foreground" :
+                          step.status === "completed" ? "text-muted-foreground" :
+                          "text-muted-foreground/60"
+                        }`}>
+                          {step.label}
+                        </div>
+                        {step.detail && (
+                          <div className="text-xs text-muted-foreground mt-1">
+                            {step.detail}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="border-t border-border bg-background">
+            <div className="max-w-4xl mx-auto px-4 py-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-1">
+                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-muted">
+                    <Share className="h-4 w-4" />
+                  </Button>
+                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-muted">
+                    <RotateCcw className="h-4 w-4" />
+                  </Button>
+                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-muted">
+                    <Copy className="h-4 w-4" />
+                  </Button>
+                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-muted">
+                    <ThumbsUp className="h-4 w-4" />
+                  </Button>
+                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-muted">
+                    <ThumbsDown className="h-4 w-4" />
+                  </Button>
+                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-muted">
+                    <MoreHorizontal className="h-4 w-4" />
+                  </Button>
+                </div>
+                <Button variant="ghost" size="sm" className="text-muted-foreground">
+                  <ChevronDown className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          </div>
+        </>
+      ) : (
+        <div className="flex-1 flex items-center justify-center p-6">
+          <div className="text-center max-w-2xl">
+            <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+              What do you want to know?
+            </h1>
+            <p className="text-muted-foreground mb-8">
+              Ask anything and get intelligent answers with sources
+            </p>
+          </div>
+        </div>
+      )}
+      
+      {/* Fixed bottom input */}
+      <div className="border-t border-border bg-background p-4">
         <div className="max-w-4xl mx-auto">
           <SearchInterface 
             onSubmit={handleSendMessage}
@@ -424,8 +620,6 @@ According to public profiles, Harmya Surani has also been associated with other 
           />
         </div>
       </div>
-
-      <FloatingScrollButtons />
     </div>
   )
 }

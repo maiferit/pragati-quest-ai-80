@@ -31,7 +31,12 @@ export function Layout({ children }: LayoutProps) {
             </div>
             
             <div className="flex items-center gap-2 flex-shrink-0 ml-2">
-              <Button variant="ghost" size="sm" className="p-2">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="p-2 hover:bg-muted"
+                onClick={() => window.alert('Settings feature coming soon!')}
+              >
                 <Settings className="h-4 w-4" />
               </Button>
               <UserProfile />
