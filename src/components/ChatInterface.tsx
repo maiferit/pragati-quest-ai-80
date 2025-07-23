@@ -59,9 +59,9 @@ export function ChatInterface({ messages = [], onSendMessage, initialQuery }: Ch
 
   const tabs = [
     { id: "answer", label: "Answer", icon: "✨" },
-    { id: "images", label: "Images", icon: "🖼️" },
+    { id: "images", label: "Images" },
     { id: "sources", label: "Sources", count: sourceCount > 0 ? sourceCount : undefined },
-    { id: "steps", label: "Steps", icon: "📋" }
+    { id: "steps", label: "Steps" }
   ]
 
   const handleSendMessage = (content: string) => {
