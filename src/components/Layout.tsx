@@ -1,8 +1,9 @@
-import { ReactNode } from "react"
+import { ReactNode, useState } from "react"
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { AppSidebar } from "./AppSidebar"
 import { Button } from "@/components/ui/button"
 import { UserProfile } from "./UserProfile"
+import { SettingsModal } from "./SettingsModal"
 import { Settings } from "lucide-react"
 
 interface LayoutProps {
@@ -10,6 +11,8 @@ interface LayoutProps {
 }
 
 export function Layout({ children }: LayoutProps) {
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false)
+  
   return (
     <SidebarProvider defaultOpen={true}>
       <div className="min-h-screen flex w-full bg-background">
@@ -35,7 +38,7 @@ export function Layout({ children }: LayoutProps) {
                 variant="ghost" 
                 size="sm" 
                 className="p-2 hover:bg-muted"
-                onClick={() => window.alert('Settings feature coming soon!')}
+                onClick={() => setIsSettingsOpen(true)}
               >
                 <Settings className="h-4 w-4" />
               </Button>
@@ -49,6 +52,11 @@ export function Layout({ children }: LayoutProps) {
           </main>
         </div>
       </div>
+      
+      <SettingsModal 
+        isOpen={isSettingsOpen} 
+        onClose={() => setIsSettingsOpen(false)} 
+      />
     </SidebarProvider>
   )
 }

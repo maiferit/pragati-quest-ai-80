@@ -467,65 +467,8 @@ According to public profiles, Harmya Surani has also been associated with other 
             </div>
           </div>
 
-          {/* Tab Navigation */}
-          <div className="border-b border-border bg-background">
-            <div className="max-w-4xl mx-auto px-4">
-              <div className="flex items-center gap-2 overflow-x-auto">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setActiveTab("answer")}
-                  className={`rounded-none border-b-2 px-3 py-3 font-medium whitespace-nowrap ${
-                    activeTab === "answer" 
-                      ? "border-primary text-primary" 
-                      : "border-transparent text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  <Lightbulb className="h-4 w-4 mr-1" />
-                  Answer
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setActiveTab("images")}
-                  className={`rounded-none border-b-2 px-3 py-3 font-medium whitespace-nowrap ${
-                    activeTab === "images" 
-                      ? "border-primary text-primary" 
-                      : "border-transparent text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  Images
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setActiveTab("sources")}
-                  className={`rounded-none border-b-2 px-3 py-3 font-medium whitespace-nowrap ${
-                    activeTab === "sources" 
-                      ? "border-primary text-primary" 
-                      : "border-transparent text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  Sources • {assistantMessage?.sources?.length || 0}
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setActiveTab("steps")}
-                  className={`rounded-none border-b-2 px-3 py-3 font-medium whitespace-nowrap ${
-                    activeTab === "steps" 
-                      ? "border-primary text-primary" 
-                      : "border-transparent text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  Steps
-                </Button>
-              </div>
-            </div>
-          </div>
-
           {/* Content Area */}
-          <div className="flex-1 overflow-y-auto">
+          <div className="flex-1 overflow-y-auto pb-32">
             <div className="max-w-4xl mx-auto px-4 py-6">
               {activeTab === "answer" && <AnswerSection />}
               {activeTab === "sources" && <SourcesSection />}
@@ -536,61 +479,145 @@ According to public profiles, Harmya Surani has also been associated with other 
               )}
               {activeTab === "steps" && (
                 <div className="space-y-4">
-                  {searchSteps.map((step, index) => (
-                    <div key={step.id} className="flex items-start gap-3 p-4 bg-card rounded-lg">
-                      <div className={`w-2 h-2 rounded-full mt-2 flex-shrink-0 ${
-                        step.status === "completed" ? "bg-primary" :
-                        step.status === "active" ? "bg-primary animate-pulse" :
-                        "bg-muted-foreground/30"
-                      }`} />
-                      <div className="flex-1">
-                        <div className={`text-sm font-medium ${
-                          step.status === "active" ? "text-foreground" :
-                          step.status === "completed" ? "text-muted-foreground" :
-                          "text-muted-foreground/60"
-                        }`}>
-                          {step.label}
-                        </div>
-                        {step.detail && (
-                          <div className="text-xs text-muted-foreground mt-1">
-                            {step.detail}
-                          </div>
-                        )}
+                  <div className="mb-6">
+                    <div className="flex items-center gap-2 mb-4">
+                      <div className="w-2 h-2 rounded-full bg-muted-foreground/30" />
+                      <span className="text-sm text-muted-foreground">Searching the web</span>
+                    </div>
+                    
+                    <div className="pl-4 border-l border-muted-foreground/20 space-y-3">
+                      <div className="text-sm text-muted-foreground">Searching</div>
+                      <div className="flex items-center gap-2 text-sm">
+                        <Search className="h-4 w-4" />
+                        <span className="font-mono text-xs bg-muted px-2 py-1 rounded">
+                          {currentQuery || "MightiGo pvt ltd"}
+                        </span>
                       </div>
                     </div>
-                  ))}
+                  </div>
+
+                  <div className="mb-6">
+                    <div className="flex items-center gap-2 mb-4">
+                      <div className="w-2 h-2 rounded-full bg-muted-foreground/30" />
+                      <span className="text-sm text-muted-foreground">Reading sources • {assistantMessage?.sources?.length || 9}</span>
+                    </div>
+                    
+                    <div className="pl-4 border-l border-muted-foreground/20 space-y-2">
+                      {assistantMessage?.sources?.slice(0, 7).map((source, index) => (
+                        <div key={index} className="flex items-center gap-2 text-xs">
+                          <span className="text-lg">{source.favicon}</span>
+                          <span className="text-muted-foreground truncate">{source.name}</span>
+                          <span className="text-muted-foreground/60">{source.url}</span>
+                        </div>
+                      )) || [
+                        { name: "mightigo private limited", url: "falconebiz", favicon: "🌐" },
+                        { name: "MCA Company Search", url: "mastersindia", favicon: "📋" },
+                        { name: "MIGHTO MATICS PRIVATE LIMITED", url: "zaubacorp", favicon: "🌐" },
+                        { name: "MIGHTO MATICS PRI", url: "indiafilings", favicon: "🇮🇳" },
+                        { name: "Harmya Surani - Found", url: "in.linkedin", favicon: "💼" },
+                        { name: "harmya himatlal surani", url: "falconebiz", favicon: "🌐" },
+                        { name: "Mighto Matics Priv", url: "thecompanycheck", favicon: "📊" }
+                      ].map((source, index) => (
+                        <div key={index} className="flex items-center gap-2 text-xs">
+                          <span className="text-lg">{source.favicon}</span>
+                          <span className="text-muted-foreground truncate">{source.name}</span>
+                          <span className="text-muted-foreground/60">{source.url}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="mb-6">
+                    <div className="flex items-center gap-2 mb-4">
+                      <div className="w-2 h-2 rounded-full bg-muted-foreground/30" />
+                      <span className="text-sm text-muted-foreground">Finished</span>
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
-          </div>
 
-          {/* Action Buttons */}
-          <div className="border-t border-border bg-background">
-            <div className="max-w-4xl mx-auto px-4 py-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-1">
-                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-muted">
-                    <Share className="h-4 w-4" />
+            {/* Tabs Navigation - After content */}
+            <div className="border-t border-border bg-background sticky bottom-20">
+              <div className="max-w-4xl mx-auto px-4">
+                <div className="flex items-center gap-1 overflow-x-auto scrollbar-hide py-3">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setActiveTab("answer")}
+                    className={`rounded-none border-b-2 px-4 py-2 font-medium whitespace-nowrap text-sm ${
+                      activeTab === "answer" 
+                        ? "border-primary text-primary" 
+                        : "border-transparent text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    <Lightbulb className="h-4 w-4 mr-1" />
+                    Answer
                   </Button>
-                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-muted">
-                    <RotateCcw className="h-4 w-4" />
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setActiveTab("images")}
+                    className={`rounded-none border-b-2 px-4 py-2 font-medium whitespace-nowrap text-sm ${
+                      activeTab === "images" 
+                        ? "border-primary text-primary" 
+                        : "border-transparent text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    Images
                   </Button>
-                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-muted">
-                    <Copy className="h-4 w-4" />
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setActiveTab("sources")}
+                    className={`rounded-none border-b-2 px-4 py-2 font-medium whitespace-nowrap text-sm ${
+                      activeTab === "sources" 
+                        ? "border-primary text-primary" 
+                        : "border-transparent text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    Sources • {assistantMessage?.sources?.length || 0}
                   </Button>
-                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-muted">
-                    <ThumbsUp className="h-4 w-4" />
-                  </Button>
-                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-muted">
-                    <ThumbsDown className="h-4 w-4" />
-                  </Button>
-                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-muted">
-                    <MoreHorizontal className="h-4 w-4" />
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setActiveTab("steps")}
+                    className={`rounded-none border-b-2 px-4 py-2 font-medium whitespace-nowrap text-sm ${
+                      activeTab === "steps" 
+                        ? "border-primary text-primary" 
+                        : "border-transparent text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    Steps
                   </Button>
                 </div>
-                <Button variant="ghost" size="sm" className="text-muted-foreground">
-                  <ChevronDown className="h-4 w-4" />
-                </Button>
+
+                {/* Action Buttons */}
+                <div className="flex items-center justify-between py-3 border-t border-border">
+                  <div className="flex items-center gap-1">
+                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-muted">
+                      <Share className="h-4 w-4" />
+                    </Button>
+                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-muted">
+                      <RotateCcw className="h-4 w-4" />
+                    </Button>
+                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-muted">
+                      <Copy className="h-4 w-4" />
+                    </Button>
+                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-muted">
+                      <ThumbsUp className="h-4 w-4" />
+                    </Button>
+                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-muted">
+                      <ThumbsDown className="h-4 w-4" />
+                    </Button>
+                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-muted">
+                      <MoreHorizontal className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  <Button variant="ghost" size="sm" className="text-muted-foreground">
+                    <ChevronDown className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
@@ -609,7 +636,7 @@ According to public profiles, Harmya Surani has also been associated with other 
       )}
       
       {/* Fixed bottom input */}
-      <div className="border-t border-border bg-background p-4">
+      <div className="fixed bottom-0 left-0 right-0 border-t border-border bg-background p-4 z-50">
         <div className="max-w-4xl mx-auto">
           <SearchInterface 
             onSubmit={handleSendMessage}
