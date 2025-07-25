@@ -35,7 +35,7 @@ export function SearchInterface({
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder={placeholder}
-          className="pl-12 pr-20 py-6 text-lg bg-card border-2 border-border hover:border-primary/50 focus:border-primary transition-colors rounded-2xl shadow-lg"
+          className="pl-12 pr-20 py-6 text-lg bg-card border-2 border-border hover:border-primary/50 focus:border-primary focus:shadow-[0_0_0_3px_hsl(var(--primary)/0.1)] transition-all duration-200 rounded-2xl shadow-lg"
         />
         
         <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center space-x-2">

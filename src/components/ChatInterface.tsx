@@ -470,57 +470,54 @@ According to public profiles, Harmya Surani has also been associated with other 
           {/* Tab Navigation */}
           <div className="border-b border-border bg-background">
             <div className="max-w-4xl mx-auto px-4">
-              <div className="flex items-center">
+              <div className="flex items-center gap-2 overflow-x-auto">
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => setActiveTab("answer")}
-                  className={`rounded-none border-b-2 px-6 py-4 font-medium ${
+                  className={`rounded-none border-b-2 px-3 py-3 font-medium whitespace-nowrap ${
                     activeTab === "answer" 
                       ? "border-primary text-primary" 
                       : "border-transparent text-muted-foreground hover:text-foreground"
                   }`}
                 >
-                  <Lightbulb className="h-4 w-4 mr-2" />
+                  <Lightbulb className="h-4 w-4 mr-1" />
                   Answer
                 </Button>
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => setActiveTab("images")}
-                  className={`rounded-none border-b-2 px-6 py-4 font-medium ${
+                  className={`rounded-none border-b-2 px-3 py-3 font-medium whitespace-nowrap ${
                     activeTab === "images" 
                       ? "border-primary text-primary" 
                       : "border-transparent text-muted-foreground hover:text-foreground"
                   }`}
                 >
-                  <Image className="h-4 w-4 mr-2" />
                   Images
                 </Button>
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => setActiveTab("sources")}
-                  className={`rounded-none border-b-2 px-6 py-4 font-medium ${
+                  className={`rounded-none border-b-2 px-3 py-3 font-medium whitespace-nowrap ${
                     activeTab === "sources" 
                       ? "border-primary text-primary" 
                       : "border-transparent text-muted-foreground hover:text-foreground"
                   }`}
                 >
-                  <ExternalLink className="h-4 w-4 mr-2" />
                   Sources • {assistantMessage?.sources?.length || 0}
                 </Button>
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => setActiveTab("steps")}
-                  className={`rounded-none border-b-2 px-6 py-4 font-medium ${
+                  className={`rounded-none border-b-2 px-3 py-3 font-medium whitespace-nowrap ${
                     activeTab === "steps" 
                       ? "border-primary text-primary" 
                       : "border-transparent text-muted-foreground hover:text-foreground"
                   }`}
                 >
-                  <List className="h-4 w-4 mr-2" />
                   Steps
                 </Button>
               </div>
