@@ -60,6 +60,18 @@ This project is built with:
 - shadcn-ui
 - Tailwind CSS
 
+## Environment variables
+
+Create a `.env` file in the project root based on `.env.example` to provide API keys.
+These variables are loaded by both the backend server and the Vite build process.
+
+```
+GEMINI_API_KEY=your-gemini-key
+GOOGLE_API_KEY=your-google-key
+```
+
+The `.env` file is git-ignored so your secrets remain private.
+
 ## How can I deploy this project?
 
 Simply open [Lovable](https://lovable.dev/projects/08c3ee89-5afd-4e47-bb17-3c9419cb4c4b) and click on Share -> Publish.
