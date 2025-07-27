@@ -1,5 +1,5 @@
-import { useState } from "react"
-import { User, Settings, Moon, Sun, LogOut, Crown } from "lucide-react"
+import { User } from "lucide-react"
+import { Settings, Moon, Sun, LogOut, Crown } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -10,12 +10,13 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { useTheme } from "next-themes"
 import { Link } from "react-router-dom"
+import { useAuth } from "@/context/AuthContext"
 
 export function UserProfile() {
   const { theme, setTheme } = useTheme()
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const { user, signOut } = useAuth()
 
-  if (!isLoggedIn) {
+  if (!user) {
     return (
       <Link to="/login">
         <Button variant="ghost" size="sm" className="p-2">
@@ -57,7 +58,7 @@ export function UserProfile() {
           <span>{theme === "dark" ? "Light mode" : "Dark mode"}</span>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => setIsLoggedIn(false)}>
+        <DropdownMenuItem onClick={signOut}>
           <LogOut className="mr-2 h-4 w-4" />
           <span>Sign out</span>
         </DropdownMenuItem>
