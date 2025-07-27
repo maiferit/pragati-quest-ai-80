@@ -64,65 +64,42 @@ export function ChatInterface({ messages = [], onSendMessage, initialQuery }: Ch
     { id: "steps", label: "Steps" }
   ]
 
-  const handleSendMessage = (content: string) => {
+  const handleSendMessage = async (content: string) => {
     const newMessage: Message = {
       id: Date.now().toString(),
-      type: "user", 
+      type: "user",
       content,
       timestamp: new Date()
     }
     setChatMessages(prev => [...prev, newMessage])
     setCurrentQuery(content)
     setIsSearching(true)
+    setSearchSteps([{ id: "1", label: "Sending", status: "active" }])
 
-    // Simulate search steps
-    const steps: SearchStep[] = [
-      { id: "1", label: "Searching the web", status: "active", detail: `MightiGo pvt ltd` },
-      { id: "2", label: "Reading sources", status: "pending", detail: "9" },
-      { id: "3", label: "Generating answer", status: "pending" }
-    ]
-    setSearchSteps(steps)
-
-    // Simulate progressive step completion
-    setTimeout(() => {
-      setSearchSteps(prev => prev.map(step => 
-        step.id === "1" ? { ...step, status: "completed" } : 
-        step.id === "2" ? { ...step, status: "active" } : step
-      ))
-    }, 1500)
-
-    setTimeout(() => {
-      setSearchSteps(prev => prev.map(step => 
-        step.id === "2" ? { ...step, status: "completed" } : 
-        step.id === "3" ? { ...step, status: "active" } : step
-      ))
-    }, 3000)
-
-    // Generate AI response
-    setTimeout(() => {
+    try {
+      const token = localStorage.getItem('token') || ''
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ message: content })
+      })
+      const data = await res.json()
       const aiResponse: Message = {
         id: (Date.now() + 1).toString(),
-        type: "assistant",
-        content: `**${content}** is a newly incorporated private company in India, officially registered on 12 June 2025. It is classified under the Corporate Identification Number (CIN) U73100GJ2025PTC164036 and is based in Gujarat.
-
-As of July 2025, the company has been in operation for just over one month. The founder and CEO of MightiGo Private Limited is **Harmya Himatlal Surani**.
-
-According to public profiles, Harmya Surani has also been associated with other tech startups, and the company is involved in digital services. Notably, MightiGo Pvt Ltd powers the web hosting brand **RaptorHostify**, which offers shared, dedicated, and VPS hosting solutions.`,
-        sources: [
-          { name: "mightigo private limited", url: "falconebiz.com", favicon: "🌐" },
-          { name: "MCA Company Search", url: "mastersindia.co", favicon: "📋" },
-          { name: "MIGHTO MATICS PRIVATE LIMITED", url: "zaubacorp.com", favicon: "🌐" },
-          { name: "MIGHTO MATICS PRI", url: "indiafilings.com", favicon: "🇮🇳" },
-          { name: "Harmya Surani - Founder", url: "in.linkedin.com", favicon: "💼" },
-          { name: "harmya himatlal surani", url: "falconebiz.com", favicon: "🌐" },
-          { name: "Mighto Matics Private Limited", url: "thecompanycheck.com", favicon: "📊" }
-        ],
+        type: 'assistant',
+        content: data.reply || 'No response',
         timestamp: new Date()
       }
       setChatMessages(prev => [...prev, aiResponse])
-      setSearchSteps(prev => prev.map(step => ({ ...step, status: "completed" })))
+    } catch (err) {
+      console.error(err)
+    } finally {
+      setSearchSteps(prev => prev.map(step => ({ ...step, status: 'completed' })))
       setIsSearching(false)
-    }, 4500)
+    }
 
     onSendMessage?.(content)
   }

@@ -11,10 +11,25 @@ export default function Login() {
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Handle login logic here
-    console.log("Login:", { email, password })
+    try {
+      const res = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      })
+      const data = await res.json()
+      if (res.ok && data.token) {
+        localStorage.setItem('token', data.token)
+        console.log('Logged in')
+      } else {
+        alert(data.error || 'Login failed')
+      }
+    } catch (err) {
+      console.error(err)
+      alert('Login failed')
+    }
   }
 
   return (
