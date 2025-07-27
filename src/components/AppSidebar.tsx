@@ -1,4 +1,4 @@
-import { Home, Compass, Library, Users, LogIn, UserPlus } from "lucide-react"
+import { Home, Compass, Library, Users, LogIn, UserPlus, LogOut } from "lucide-react"
 import { NavLink, useLocation } from "react-router-dom"
 import {
   Sidebar,
@@ -12,6 +12,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 import { Button } from "@/components/ui/button"
+import { useAuth } from "@/hooks/useAuth"
 
 const navigationItems = [
   { title: "Home", url: "/", icon: Home },
@@ -25,6 +26,7 @@ export function AppSidebar() {
   const location = useLocation()
   const currentPath = location.pathname
   const isCollapsed = state === "collapsed"
+  const { email, logout } = useAuth()
 
   const isActive = (path: string) => currentPath === path
   const getNavCls = ({ isActive }: { isActive: boolean }) =>
@@ -69,14 +71,27 @@ export function AppSidebar() {
         {/* Auth Buttons */}
         {!isCollapsed && (
           <div className="mt-auto p-4 space-y-2 border-t border-sidebar-border">
-            <Button variant="outline" className="w-full justify-start" size="sm">
-              <LogIn className="h-4 w-4 mr-2" />
-              Sign In
-            </Button>
-            <Button variant="premium" className="w-full justify-start" size="sm">
-              <UserPlus className="h-4 w-4 mr-2" />
-              Sign Up
-            </Button>
+            {!email ? (
+              <>
+                <Button asChild variant="outline" className="w-full justify-start" size="sm">
+                  <NavLink to="/login">
+                    <LogIn className="h-4 w-4 mr-2" />
+                    Sign In
+                  </NavLink>
+                </Button>
+                <Button asChild variant="premium" className="w-full justify-start" size="sm">
+                  <NavLink to="/signup">
+                    <UserPlus className="h-4 w-4 mr-2" />
+                    Sign Up
+                  </NavLink>
+                </Button>
+              </>
+            ) : (
+              <Button variant="outline" className="w-full justify-start" size="sm" onClick={logout}>
+                <LogOut className="h-4 w-4 mr-2" />
+                Sign Out
+              </Button>
+            )}
           </div>
         )}
       </SidebarContent>
