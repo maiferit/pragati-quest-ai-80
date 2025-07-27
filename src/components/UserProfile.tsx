@@ -1,4 +1,3 @@
-import { useState } from "react"
 import { User, Settings, Moon, Sun, LogOut, Crown } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
@@ -10,12 +9,13 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { useTheme } from "next-themes"
 import { Link } from "react-router-dom"
+import { useAuth } from "@/hooks/useAuth"
 
 export function UserProfile() {
   const { theme, setTheme } = useTheme()
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const { email, logout } = useAuth()
 
-  if (!isLoggedIn) {
+  if (!email) {
     return (
       <Link to="/login">
         <Button variant="ghost" size="sm" className="p-2">
@@ -57,7 +57,7 @@ export function UserProfile() {
           <span>{theme === "dark" ? "Light mode" : "Dark mode"}</span>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => setIsLoggedIn(false)}>
+        <DropdownMenuItem onClick={logout}>
           <LogOut className="mr-2 h-4 w-4" />
           <span>Sign out</span>
         </DropdownMenuItem>
