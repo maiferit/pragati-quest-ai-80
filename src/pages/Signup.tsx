@@ -18,14 +18,28 @@ export default function Signup() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [acceptTerms, setAcceptTerms] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (formData.password !== formData.confirmPassword) {
       alert("Passwords don't match")
       return
     }
-    // Handle signup logic here
-    console.log("Signup:", formData)
+    try {
+      const res = await fetch('/api/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: formData.email, password: formData.password })
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        alert(data.error || 'Signup failed')
+      } else {
+        alert('Account created')
+      }
+    } catch (err) {
+      console.error(err)
+      alert('Signup failed')
+    }
   }
 
   const handleInputChange = (field: string, value: string) => {
