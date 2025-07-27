@@ -71,3 +71,22 @@ Yes, you can!
 To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
 Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+
+## Running the Express backend
+
+To enable server-side features you need to run the included Express server. Before starting the server, create a `.env` file in the project root (or export these variables in your shell) with the following settings:
+
+```bash
+GEMINI_API_KEY=<your Gemini API key>
+GOOGLE_API_KEY=<your Google API key>
+GOOGLE_CX=<your Google Custom Search CX id>
+```
+
+After the variables are configured, start the backend with:
+
+```bash
+npm run server
+```
+
+The guest plan includes a limited number of free requests. Once this limit is reached you must upgrade or supply your own API keys to continue.
+
