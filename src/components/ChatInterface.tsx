@@ -1,4 +1,6 @@
 import { useState, useEffect, useRef } from "react"
+import { useAuth } from "@/context/AuthContext"
+import { saveQuery } from "@/lib/history"
 import { Home, Menu, MoreHorizontal, ExternalLink, Mic, ArrowUp, Edit2, RotateCcw, ChevronUp, Search, Copy, Check, Lightbulb, Image, List, Share, ThumbsUp, ThumbsDown, ChevronDown, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { SearchInterface } from "./SearchInterface"
@@ -36,6 +38,8 @@ export function ChatInterface({ messages = [], onSendMessage, initialQuery }: Ch
   const [isEditing, setIsEditing] = useState(false)
   const [editQuery, setEditQuery] = useState(currentQuery)
   const [isCopied, setIsCopied] = useState(false)
+  const { user } = useAuth()
+  const GUEST_LIMIT = 5
 
   // Handle initial query on mount
   useEffect(() => {
@@ -65,9 +69,19 @@ export function ChatInterface({ messages = [], onSendMessage, initialQuery }: Ch
   ]
 
   const handleSendMessage = (content: string) => {
+    if (!user) {
+      const count = parseInt(localStorage.getItem('guest_count') || '0')
+      if (count >= GUEST_LIMIT) {
+        alert('Guest limit reached. Please sign up to continue.')
+        return
+      }
+      localStorage.setItem('guest_count', String(count + 1))
+    } else {
+      saveQuery(user.id, content)
+    }
     const newMessage: Message = {
       id: Date.now().toString(),
-      type: "user", 
+      type: "user",
       content,
       timestamp: new Date()
     }

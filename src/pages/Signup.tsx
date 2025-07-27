@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { Link } from "react-router-dom"
+import { useAuth } from "@/context/AuthContext"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -17,6 +18,7 @@ export default function Signup() {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [acceptTerms, setAcceptTerms] = useState(false)
+  const { signUp } = useAuth()
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -24,8 +26,7 @@ export default function Signup() {
       alert("Passwords don't match")
       return
     }
-    // Handle signup logic here
-    console.log("Signup:", formData)
+    signUp(formData.email, formData.password)
   }
 
   const handleInputChange = (field: string, value: string) => {
